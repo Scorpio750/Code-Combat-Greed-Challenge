@@ -4,8 +4,8 @@
 // Check out the green Guide button at the top for more info.
 
 //Not working for some reason
-if (this.munchkinBudget === undefined)
-    this.munchkinBudget = 50;
+if (this.budget === undefined)
+    this.budget = -1;
 
 var base = this;
 
@@ -29,8 +29,22 @@ var fangriders = base.getByType('fangrider');
 var enemies = base.getEnemies();
 
 //cycle through all peons and grab the nearest money (greedy approach) 
+
+function getRidofNearestGold(element) {
+    return element != peons[peonIndex].getNearest(moneys);
+}
+
 for (var peonIndex = 0; peonIndex < peons.length; peonIndex++) {
     var peon = peons[peonIndex];
+    //makes sure peon targets do not overlap
+    /* for (var j = 0; j < peons.length; j++) {
+        if (peons[j] == peons[peonIndex])
+            continue;
+        if (peons[peonIndex].getNearest(moneys) == peons[j].getNearest(moneys)) {
+            
+            moneys = moneys.filter(getRidofNearestGold);
+        }   
+    } */
     var money = peon.getNearest(moneys);
     base.command(peon, 'move', money.pos);
 }
@@ -53,26 +67,31 @@ for (var enemyIndex = 0; enemyIndex < enemies.length; enemyIndex++) {
 // You can only build one unit per frame, if you have enough gold.
 
 var type;
+if (base.gold >= 115)
+    this.budget = 115;
 //makes peons unless enemies get close
-if (peons.length < 5 && base.distance(closestEnemy) > 30)
+if (peons.length < 4 && base.distance(closestEnemy) > 30)
     type = 'peon';
-//makes combat units
-/*if (Math.floor(this.munchkinBudget/10) > 0) {
-    base.build('munchkin');
-    this.munchkinBudget -= 10;
-}*/
-else if (munchkins.length < 3)
-    type = 'munchkin';
-else if (shamans.length < 3)
-    type = 'shaman';
-else if (ogres.length < 2)
-    type = 'ogre';
-else
-    type = 'fangrider';
+//makes 5 munchkins at once
+else if (this.budget <= 115 && this.budget > 0) { 
+    if (this.budget > 65) {
+        type = 'munchkin';
+        this.budget -= 10;
+    }
+    else if (this.budget > 25) {
+        type = 'shaman';
+        this.budget -= 40;
+    }
+    else if (this.budget > 0){
+        type = 'ogre';
+        this.budget -= 25;
+    }
+}
 
-if (base.gold >= base.buildables[type].goldCost)
-    base.build(type);
-    
+if (type !== undefined) {
+    if (base.gold >= base.buildables[type].goldCost)
+        base.build(type);
+}
 // 'peon': Peons gather gold and do not fight.
 // 'munchkin': Light melee unit.
 // 'ogre': Heavy melee unit.
