@@ -4,9 +4,9 @@
 // Check out the green Guide button at the top for more info.
 
 //Not working for some reason
-/*if (typeof this.munchkinBudget === undefined) {
+if (this.munchkinBudget === undefined)
     this.munchkinBudget = 50;
-}*/
+
 var base = this;
 
 /////// 1. Command peons to grab coins and gems. ///////
@@ -54,21 +54,21 @@ for (var enemyIndex = 0; enemyIndex < enemies.length; enemyIndex++) {
 
 var type;
 //makes peons unless enemies get close
-if (peons.length < 4 && base.distance(closestEnemy) > 10)
+if (peons.length < 5 && base.distance(closestEnemy) > 30)
     type = 'peon';
 //makes combat units
 /*if (Math.floor(this.munchkinBudget/10) > 0) {
     base.build('munchkin');
     this.munchkinBudget -= 10;
 }*/
-else if (ogres.length < 2)
-    type = 'ogre';
+else if (munchkins.length < 3)
+    type = 'munchkin';
 else if (shamans.length < 3)
     type = 'shaman';
-else if (fangriders.length < 2)
-    type = 'fangrider';
+else if (ogres.length < 2)
+    type = 'ogre';
 else
-    type = 'berserker';
+    type = 'fangrider';
 
 if (base.gold >= base.buildables[type].goldCost)
     base.build(type);
