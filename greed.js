@@ -31,7 +31,7 @@ for (var peonIndex = 0; peonIndex < peons.length; peonIndex++) {
 //find the enemy closest to the base
 var closestEnemy;
 for (var enemyIndex = 0; enemyIndex < enemies.length; enemyIndex++) {
-    if (enemies[enemyIndex].type == 'peon')
+    if (enemies[enemyIndex].type == 'peasant')
         continue;
         
     if (closestEnemy === undefined)
