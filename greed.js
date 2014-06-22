@@ -4,9 +4,9 @@
 // Check out the green Guide button at the top for more info.
 
 //Not working for some reason
-if (this.budget === undefined)
-    this.budget = -1;
-
+/*if (typeof this.munchkinBudget === undefined) {
+this.munchkinBudget = 50;
+}*/
 var base = this;
 
 /////// 1. Command peons to grab coins and gems. ///////
@@ -14,8 +14,8 @@ var base = this;
 // You win by gathering gold more efficiently to make a larger army.
 // Click on a unit to see its API.
 var items = base.getItems();
-var coins = base.getByType('coin'); 
-var goldcoins = base.getByType('gold-coin'); 
+var coins = base.getByType('coin');
+var goldcoins = base.getByType('gold-coin');
 var gems = base.getByType('gem');
 //make consolidated array of all money items
 var moneys = gems.concat(coins, goldcoins);
@@ -28,23 +28,9 @@ var munchkins = base.getByType('munchkin');
 var fangriders = base.getByType('fangrider');
 var enemies = base.getEnemies();
 
-//cycle through all peons and grab the nearest money (greedy approach) 
-
-function getRidofNearestGold(element) {
-    return element != peons[peonIndex].getNearest(moneys);
-}
-
+//cycle through all peons and grab the nearest money (greedy approach)
 for (var peonIndex = 0; peonIndex < peons.length; peonIndex++) {
     var peon = peons[peonIndex];
-    //makes sure peon targets do not overlap
-    /* for (var j = 0; j < peons.length; j++) {
-        if (peons[j] == peons[peonIndex])
-            continue;
-        if (peons[peonIndex].getNearest(moneys) == peons[j].getNearest(moneys)) {
-            
-            moneys = moneys.filter(getRidofNearestGold);
-        }   
-    } */
     var money = peon.getNearest(moneys);
     base.command(peon, 'move', money.pos);
 }
@@ -67,31 +53,28 @@ for (var enemyIndex = 0; enemyIndex < enemies.length; enemyIndex++) {
 // You can only build one unit per frame, if you have enough gold.
 
 var type;
-if (base.gold >= 115)
-    this.budget = 115;
 //makes peons unless enemies get close
-if (peons.length < 4 && base.distance(closestEnemy) > 30)
+if (peons.length < 4 && base.distance(closestEnemy) > 50)
     type = 'peon';
-//makes 5 munchkins at once
-else if (this.budget <= 115 && this.budget > 0) { 
-    if (this.budget > 65) {
-        type = 'munchkin';
-        this.budget -= 10;
-    }
-    else if (this.budget > 25) {
-        type = 'shaman';
-        this.budget -= 40;
-    }
-    else if (this.budget > 0){
-        type = 'ogre';
-        this.budget -= 25;
-    }
-}
+//makes combat units
+/*if (Math.floor(this.munchkinBudget/10) > 0) {
+base.build('munchkin');
+this.munchkinBudget -= 10;
+}*/
+else if (ogres.length < 2)
+    type = 'ogre';
+else if (shamans.length < 3)
+    type = 'shaman';
+else if (munchkins.length < 3)
+    type = 'munchkin';
+else if (fangriders.length < 2)
+    type = 'fangrider';
+else
+    type = 'berserker';
 
-if (type !== undefined) {
-    if (base.gold >= base.buildables[type].goldCost)
-        base.build(type);
-}
+if (base.gold >= base.buildables[type].goldCost)
+    base.build(type);
+    
 // 'peon': Peons gather gold and do not fight.
 // 'munchkin': Light melee unit.
 // 'ogre': Heavy melee unit.
